@@ -4,7 +4,7 @@ class CodeParser
     @lines_parsed = 0
 
     case language
-    when 'Java'
+    when 'java'
       @word_pattern = /(?<=\W|^)[a-zA-Z_$][\w$]*/i
       @mark_pattern = /[\p{P}\p{S}\p{M}]/
     end
@@ -42,12 +42,3 @@ class CodeParser
     @result = @result.sort_by { |word, occur| [-occur, word] }
   end
 end
-
-parser = CodeParser.new('Java')
-code = 'public class MyFirstJavaProgram {
-
-    public static void main(String []args) {
-       System.out.println("Hello World");
-    }
-}'
-puts parser.parse(code)

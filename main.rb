@@ -1,4 +1,4 @@
-require_relative 'github_parser'
+require_relative 'github_crawler'
 
-parser = GitHubParser.new("Java", 3000000)
+parser = GitHubCrawler.new("Java", 3000000)
 parser.parse_page(1)

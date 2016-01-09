@@ -12,13 +12,18 @@ class RepositoryParser
   def parse(repo)
     FileUtils.cd('tmp')
 
-    result = {}
+    result = Result.new
 
     `git clone #{repo.clone_url}`
     Dir.glob("#{repo.name}/**/*#{@file_extension}").each do |file|
       code = IO.read(file)
-      single_result = @code_parser.parse(code)
-      result = result.merge(single_result) { |_, left, right| left + right }
+      puts "File result"
+      file_result = @code_parser.parse(code)
+      puts file_result.words
+      puts "Result"
+      result.merge(file_result)
+      puts result.words
+      exit!
     end
 
     FileUtils.cd('..')

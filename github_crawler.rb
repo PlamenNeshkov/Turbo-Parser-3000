@@ -14,8 +14,9 @@ class GitHubCrawler
     password = 'random98'
 
     @client = Octokit::Client.new(login: login, password: password)
-
     puts 'Successful authentication with GitHub!'
+
+    @repo_parser = RepositoryParser.new(@language)
   end
 
   def clean_old_result
@@ -37,15 +38,19 @@ class GitHubCrawler
   end
 
   def parse_page(page_number)
-    response = @client.search_repositories("language:#{@language}")
+    response = @client.search_repos("language:#{@language}", {sort: 'desc'})
 
     repos = response.items
     repos.each do |repo|
       print_divider
+
       puts "Parsing repository #{repo.full_name}"
-      ###
+      repo_result = @repo_parser.parse(repo)
+      p repo_result
+
       log_repo(repo)
     end
+
     print_divider
   end
 end

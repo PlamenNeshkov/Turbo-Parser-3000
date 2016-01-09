@@ -42,7 +42,6 @@ class CodeParser
 
     @total_lines_parsed += lines_parsed
 
-    @words = @words.sort_by { |word, occur| [-occur, word] }.to_h
     result = Result.new(lines_parsed, @words, @marks)
   end
 end

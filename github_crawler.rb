@@ -18,6 +18,7 @@ class GitHubCrawler
     puts 'Successful authentication with GitHub!'
 
     @repo_parser = RepositoryParser.new(@language)
+    @result = Result.new
   end
 
   def clean_old_result
@@ -29,11 +30,12 @@ class GitHubCrawler
     puts '-' * 80
   end
 
-  def log_repo(repo)
+  def log_repo(repo, lines_parsed)
     CSV.open('result/repositories.csv', 'a') do |csv|
       row = []
       row << repo.name
       row << repo.html_url
+      row << lines_parsed
       csv << row
     end
   end
@@ -47,10 +49,14 @@ class GitHubCrawler
 
       puts "Parsing repository #{repo.full_name}..."
       repo_result = @repo_parser.parse(repo)
-      log_repo(repo)
+      log_repo(repo, repo_result.lines_parsed)
 
       @lines_parsed += repo_result.lines_parsed
+      break if @lines_parsed >= @lines_to_parse
 
+      @result.merge(repo_result)
+      @result.sort!
+      @result.to_json
     end
 
     print_divider

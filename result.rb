@@ -1,3 +1,5 @@
+require 'json'
+
 class Result
   attr_reader :lines_parsed, :words, :marks
 
@@ -9,6 +11,7 @@ class Result
 
   def merge(other)
     @lines_parsed += other.lines_parsed
+
     other.words.each_key do |word|
       if (@words.has_key?(word))
         @words[word] += other.words[word]
@@ -16,6 +19,24 @@ class Result
         @words[word] = other.words[word]
       end
     end
+
     @marks += other.marks
   end
+
+  def to_json
+    result_hash = @words
+    puts "Marks: #{@marks}"
+    result_hash['marks'] = @marks
+    json = JSON.pretty_generate(result_hash)
+    File.write('result.json', json)
+  end
+
+  def sort
+    @words.sort_by { |word, occur| [-occur, word] }
+  end
+
+  def sort!
+    @words = @words.sort_by { |word, occur| [-occur, word] }.to_h
+  end
+
 end

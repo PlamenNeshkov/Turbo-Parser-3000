@@ -9,8 +9,8 @@ class Result
 
   def merge(other)
     @lines_parsed += other.lines_parsed
-    @words.each_key do |word|
-      if (other.words.has_key?(word))
+    other.words.each_key do |word|
+      if (@words.has_key?(word))
         @words[word] += other.words[word]
       else
         @words[word] = other.words[word]

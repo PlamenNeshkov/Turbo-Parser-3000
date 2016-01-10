@@ -1,29 +1,35 @@
 require_relative 'code_parser'
 
-class RepositoryParser
-  def initialize(language)
-    case language
-    when 'java'
-      @file_extension = '.java'
+module TurboParser3000
+  class RepositoryParser
+    def initialize(language)
+      case language
+      when 'java'
+        @file_extension = '.java'
+      end
+      @code_parser = CodeParser.new(language)
     end
-    @code_parser = CodeParser.new(language)
-  end
 
-  def parse(repo)
-    FileUtils.cd('tmp')
+    def parse(repo)
+      @result = Result.new
+      FileUtils.cd('tmp')
 
-    result = Result.new
+      `git clone #{repo.clone_url}`
+      Dir.glob("#{repo.name}/**/*#{@file_extension}").each do |file|
+        parse_file(file)
+      end
 
-    `git clone #{repo.clone_url}`
-    Dir.glob("#{repo.name}/**/*#{@file_extension}").each do |file|
+      FileUtils.cd('..')
+      @result
+    end
+
+    def parse_file(file)
+      puts "Parsing #{file}"
       code = IO.read(file)
       file_result = @code_parser.parse(code)
-      result.merge(file_result)
+      @result.merge(file_result)
     end
 
-    p result
-
-    FileUtils.cd('..')
-    result
+    private :parse_file
   end
 end

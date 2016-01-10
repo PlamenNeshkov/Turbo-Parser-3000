@@ -3,11 +3,19 @@ require_relative 'code_parser'
 module TurboParser3000
   class RepositoryParser
     def initialize(language)
+      assign_extension(language)
+      @code_parser = CodeParser.new(language)
+    end
+
+    def assign_extension(language)
       case language
       when 'java'
-        @file_extension = '.java'
+        @file_extension = /.+\.java/i
+      when 'c++'
+        @file_extension = /.+\.(c(c|p{2}|x{2})|h(h|p{2}|x{2}))/i
+      when 'ruby'
+        @file_extension = /.+\.rb/i
       end
-      @code_parser = CodeParser.new(language)
     end
 
     def parse(repo)
@@ -15,7 +23,7 @@ module TurboParser3000
       FileUtils.cd('tmp')
 
       `git clone #{repo.clone_url}`
-      Dir.glob("#{repo.name}/**/*#{@file_extension}").each do |file|
+      Dir.glob("#{repo.name}/**/*").grep(@file_extension).each do |file|
         parse_file(file)
       end
 

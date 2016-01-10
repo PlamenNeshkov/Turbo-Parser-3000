@@ -50,30 +50,38 @@ module TurboParser3000
       end
     end
 
+    def write_result(repo_result)
+      @result.merge(repo_result)
+      @result.sort!
+      @result.to_json(@language)
+    end
+
+    def handle_repo(repo)
+      print_divider
+
+      puts "Parsing repository #{repo.full_name}..."
+      puts # empty line for better visibility
+      repo_result = @repo_parser.parse(repo)
+      log_repo(repo, repo_result.lines_parsed)
+
+      @lines_parsed += repo_result.lines_parsed
+      write_result(repo_result)
+
+      puts "Lines parsed so far: #{@lines_parsed}"
+    end
+
     def parse_page(page_number)
       response = @client.search_repos("language:#{@language}",
                                       page: page_number)
 
       repos = response.items
       repos.each do |repo|
-        print_divider
-
-        puts "Parsing repository #{repo.full_name}..."
-        puts # empty line for better visibility
-        repo_result = @repo_parser.parse(repo)
-        log_repo(repo, repo_result.lines_parsed)
-
-        @lines_parsed += repo_result.lines_parsed
-        break if @lines_parsed >= @lines_to_parse
-
-        @result.merge(repo_result)
-        @result.sort!
-        @result.to_json(@language)
-
-        puts "Lines parsed so far: #{@lines_parsed}"
+        handle_repo(repo)
+        if @lines_parsed >= @lines_to_parse
+          puts "Lines target reached. Stopping."
+          break
+        end
       end
-
-      print_divider
     end
 
     private :clean_old_result, :print_divider, :log_repo, :parse_page

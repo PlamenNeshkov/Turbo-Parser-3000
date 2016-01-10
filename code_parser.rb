@@ -6,6 +6,12 @@ module TurboParser3000
       @language = language
       @total_lines_parsed = 0
 
+      assign_pattern(language)
+
+      @mark_pattern = /[\p{P}\p{S}\p{M}]/
+    end
+
+    def assign_pattern(language)
       case language
       when 'java'
         @word_pattern = /(?<=\W|^)[a-zA-Z_$][\w$]*/i
@@ -14,7 +20,6 @@ module TurboParser3000
       when 'ruby'
         @word_pattern = /(?<=\W|^)[a-zA-Z$_@][\w$]*/i
       end
-      @mark_pattern = /[\p{P}\p{S}\p{M}]/
     end
 
     def parse(code)

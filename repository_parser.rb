@@ -11,7 +11,7 @@ module TurboParser3000
       case language
       when 'java'
         @file_extension = /.+\.java/i
-      when 'c++'
+      when 'cpp'
         @file_extension = /.+\.(c(c|p{2}|x{2})|h(h|p{2}|x{2}))/i
       when 'ruby'
         @file_extension = /.+\.rb/i
@@ -38,6 +38,6 @@ module TurboParser3000
       @result.merge(file_result)
     end
 
-    private :parse_file
+    private :assign_extension, :parse_file
   end
 end

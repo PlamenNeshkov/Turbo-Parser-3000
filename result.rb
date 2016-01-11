@@ -26,7 +26,6 @@ module TurboParser3000
 
     def to_json(language)
       result_hash = @words
-      puts "Marks: #{@marks}"
       result_hash['marks'] = @marks
       json = JSON.pretty_generate(result_hash)
       File.write("result/#{language}.json", json)

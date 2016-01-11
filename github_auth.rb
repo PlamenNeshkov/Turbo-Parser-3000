@@ -1,4 +1,5 @@
 require 'octokit'
+require 'colorize'
 
 module TurboParser3000
   class GitHubAuth
@@ -9,7 +10,7 @@ module TurboParser3000
       begin
         @client.authorizations
       rescue Octokit::Unauthorized
-        puts "Wrong credentials, please try again."
+        puts "Wrong credentials, please try again.".red
         @client = nil
       end
     end

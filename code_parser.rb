@@ -33,8 +33,6 @@ module TurboParser3000
         parse_line(line)
       end
 
-      puts "Lines parsed in this code: #{lines_parsed}"
-
       @total_lines_parsed += lines_parsed
 
       Result.new(lines_parsed, @words, @marks)
@@ -67,7 +65,7 @@ module TurboParser3000
       line.scan(@mark_pattern).each do
         @marks += 1
       end
-    end  
+    end
 
     private :assign_pattern, :enforce_utf8, :parse_line,
             :count_words, :count_marks

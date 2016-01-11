@@ -1,8 +1,9 @@
 require_relative 'repository_parser'
 require_relative 'graph_generator'
 
-require 'octokit'
 require 'fileutils'
+require 'colorize'
+require 'octokit'
 require 'csv'
 
 module TurboParser3000
@@ -88,9 +89,9 @@ module TurboParser3000
     def stop
       puts 'Lines target reached. Stopping.'
 
-      print 'Generating bar graph...'
+      print 'Generating bar graph... '
       GraphGenerator.generate(@language, @result)
-      puts ' generated!'
+      puts 'generated!'.green
 
       sort_repositories
     end
@@ -102,13 +103,14 @@ module TurboParser3000
     def clean_old_result
       FileUtils.rm_rf(Dir.glob('tmp/**/*'))
       FileUtils.mkdir('result') unless File.exists?('result')
+      FileUtils.mkdir('tmp') unless File.exists?('tmp')
     end
 
     def empty_line
       puts
     end
 
-    private :clean_old_result, :print_divider, :log_repo, :empty_line
+    private :clean_old_result, :print_divider, :log_repo, :empty_line,
             :write_result, :handle_repo, :parse_page, :stop
   end
 end

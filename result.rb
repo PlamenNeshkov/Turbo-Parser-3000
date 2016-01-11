@@ -25,10 +25,14 @@ module TurboParser3000
     end
 
     def to_json(language)
+      print 'Generating JSON... '
+
       result_hash = @words
       result_hash['marks'] = @marks
       json = JSON.pretty_generate(result_hash)
       File.write("result/#{language}.json", json)
+
+      puts 'generated!'.green
     end
 
     def sort
